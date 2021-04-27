@@ -235,7 +235,7 @@ function drawScene(gl, program, buffers)
   gl.enableVertexAttribArray(program.attribLocations.vertexPosition);                    //バッファーの頂点属性を有効化
   
   //シェーダーを使う
-  gl.useProgram(program.shaderprogram); //////////////////////////
+  gl.useProgram(program.shaderProgram); //////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////////////////
   // uniform 変数を設定
@@ -256,6 +256,8 @@ function initShaderProgram(gl, vsSource, fsSource)
 
   //シェーダープログラムを作成
   const shaderProgram = gl.createProgram();
+
+  //アタッチ
   gl.attachShader(shaderProgram, vertexShader);
   gl.attachShader(shaderProgram, fragmentShader);
   gl.linkProgram(shaderProgram);
