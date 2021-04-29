@@ -31,7 +31,6 @@ let model =
 
 let canvas;         //キャンバス
 let gl;             //コンテキスト
-//var shaderProgram;  //シェーダープログラムを作成
 let buffers;        //バッファー
 
 let programInfo = {  attribLocations: {},uniformLocations: {}  };  //プログラム
@@ -76,39 +75,40 @@ function main()
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+  //シェーダープログラムオブジェクトを作成
+  const shaderProgram = initShaderProgram(gl, vsSource, fsSource);//シェーダープログラムを作成
 
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//シェーダープログラムオブジェクトを作成
-const shaderProgram = initShaderProgram(gl, vsSource, fsSource);//シェーダープログラムを作成
-
-programInfo.shaderProgram = shaderProgram;
-programInfo.attribLocations.vertexPosition = gl.getAttribLocation(shaderProgram,'aVertexPosition');
-programInfo.uniformLocations.projectionMatrix = gl.getUniformLocation(shaderProgram,'uProjectionMatrix');
-programInfo.uniformLocations.modelViewMatrix = gl.getUniformLocation(shaderProgram,'uModelViewMatrix');
+  programInfo.shaderProgram = shaderProgram;
+  programInfo.attribLocations.vertexPosition = gl.getAttribLocation(shaderProgram,'aVertexPosition');
+  programInfo.uniformLocations.projectionMatrix = gl.getUniformLocation(shaderProgram,'uProjectionMatrix');
+  programInfo.uniformLocations.modelViewMatrix = gl.getUniformLocation(shaderProgram,'uModelViewMatrix');
 
   buffers = initBuffers(gl);  //バッファーを作成
-  drawScene(gl, programInfo, buffers);  //描画 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  
 
-  
+
+
+// ######### 毎フレーム  #########
+
+  Update(); //計算
+  Draw();   //描画
 }
 
 
 //Update()
 function Update()
 {
-  //window.requestAnimationFrame(Update);
+  InputKey();
+  
+  window.requestAnimationFrame(Update);
 
 }
 
 //Draw
 function Draw()
 {
-  //window.requestAnimationFrame(Draw);
+  drawScene(gl, programInfo, buffers);  //描画 
+
+  window.requestAnimationFrame(Draw);
 
 }
 
@@ -118,8 +118,9 @@ function Draw()
 //キー入力
 function InputKey()
 {
-  /*
-  document.body.addEventListener("keydown",event => {
+  
+  document.body.addEventListener("keydown",event => 
+  {
 
     //スペースキー
     if(event.key == " ")
@@ -150,8 +151,9 @@ function InputKey()
           //alert("キーが押されました。");
           console.log("Down");
     }
-});
-*/
+
+  });
+
 }
 
 
@@ -237,13 +239,12 @@ function drawScene(gl, program, buffers)
   //シェーダーを使う
   gl.useProgram(program.shaderProgram); //////////////////////////
 
-/////////////////////////////////////////////////////////////////////////////////////////
   // uniform 変数を設定
   gl.uniformMatrix4fv(program.uniformLocations.projectionMatrix,false,projectionMatrix);
   gl.uniformMatrix4fv(program.uniformLocations.modelViewMatrix,false,modelViewMatrix);
 
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);  //描画
-/////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 }
